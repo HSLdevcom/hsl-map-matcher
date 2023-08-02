@@ -5,6 +5,9 @@
   "repository": "git@github.com:HSLdevcom/hsl-map-matcher.git",
   "author": "hsldevcom",
   "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "@project-osrm/osrm": "^5.27.1"
   }
