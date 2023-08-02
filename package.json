@@ -1,0 +1,11 @@
+{
+  "name": "hsl-map-matcher",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:HSLdevcom/hsl-map-matcher.git",
+  "author": "hsldevcom",
+  "license": "MIT",
+  "dependencies": {
+    "@project-osrm/osrm": "^5.27.1"
+  }
+}
