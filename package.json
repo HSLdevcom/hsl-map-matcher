@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@project-osrm/osrm": "^5.27.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1"
   },
   "devDependencies": {
     "eslint": "^8.46.0",

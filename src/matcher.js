@@ -21,22 +21,28 @@ const initNetworks = () => {
   });
 };
 
-const matchGeometry = (profile, geometry) => {
+const matchGeometry = async (profile, geometry) => {
   if (!getProfiles().includes(profile)) {
     throw Error(`Invalid profile: ${profile}`);
   }
 
   const osrm = networks[profile];
 
-  osrm.match(
-    { coordinates: geometry, overview: 'full', geometries: 'geojson' },
-    (err, response) => {
-      if (err) {
-        throw err;
-      }
-      return response.matchings[0].geometry;
-    },
-  );
+  return new Promise((resolve, reject) => {
+    osrm.match(
+      { coordinates: geometry.coordinates, overview: 'full', geometries: 'geojson' },
+      (err, response) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve({
+          confidence: response.matchings[0].confidence,
+          geometry: response.matchings[0].geometry,
+        });
+      },
+    );
+  });
 };
 
 export { initNetworks, getProfiles, matchGeometry };
