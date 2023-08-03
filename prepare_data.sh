@@ -5,13 +5,19 @@ wget -q -O data/hsl.osm.pbf https://karttapalvelu.storage.hsldev.com/hsl.osm/hsl
 
 echo "Data is downloaded!"
 
-echo "Copying custom profiles to osrm"
-cp -r profiles/trambus.lua node_modules/@project-osrm/osrm/profiles/trambus.lua
 
-echo "Processing networks for profiles..."
-mkdir -p data/trambus/
-node_modules/@project-osrm/osrm/lib/binding/osrm-extract data/hsl.osm.pbf -p node_modules/@project-osrm/osrm/profiles/trambus.lua
-mv data/hsl.osrm* data/trambus/ # Move data to profile-specific folder
-node_modules/@project-osrm/osrm/lib/binding/osrm-contract data/trambus/hsl.osrm
+for f in profiles/*.lua
+do
+  profile=$(basename $f .lua)
+
+  echo "Processing routing network for profile ${profile}..."
+  cp profiles/${profile}.lua node_modules/@project-osrm/osrm/profiles/${profile}.lua
+
+  mkdir -p data/${profile}/
+  node_modules/@project-osrm/osrm/lib/binding/osrm-extract data/hsl.osm.pbf -p node_modules/@project-osrm/osrm/profiles/${profile}.lua
+  mv data/hsl.osrm* data/${profile}/ # Move data to profile-specific folder
+  node_modules/@project-osrm/osrm/lib/binding/osrm-contract data/${profile}/hsl.osrm
+done
+
 
 echo "Data preparation ready!"
