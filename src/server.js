@@ -1,5 +1,7 @@
 import express from 'express';
 
+import { matchGeometry } from './matcher';
+
 const app = express();
 const port = 3000;
 

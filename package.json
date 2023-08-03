@@ -7,9 +7,9 @@
   "author": "hsldevcom",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index.js",
-    "start:production": "node index.js",
-    "lint": "eslint index.js"
+    "start": "nodemon src/server.js",
+    "start:production": "node src/server.js",
+    "lint": "eslint src/**/*.js"
   },
   "dependencies": {
     "@project-osrm/osrm": "^5.27.1",

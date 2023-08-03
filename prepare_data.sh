@@ -6,12 +6,12 @@ wget -q -O data/hsl.osm.pbf https://karttapalvelu.storage.hsldev.com/hsl.osm/hsl
 echo "Data is downloaded!"
 
 
-for f in profiles/*.lua
+for f in osrm-profiles/*.lua
 do
   profile=$(basename $f .lua)
 
   echo "Processing routing network for profile ${profile}..."
-  cp profiles/${profile}.lua node_modules/@project-osrm/osrm/profiles/${profile}.lua
+  cp osrm-profiles/${profile}.lua node_modules/@project-osrm/osrm/profiles/${profile}.lua
 
   mkdir -p data/${profile}/
   node_modules/@project-osrm/osrm/lib/binding/osrm-extract data/hsl.osm.pbf -p node_modules/@project-osrm/osrm/profiles/${profile}.lua
