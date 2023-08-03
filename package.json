@@ -2,13 +2,26 @@
   "name": "hsl-map-matcher",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "repository": "git@github.com:HSLdevcom/hsl-map-matcher.git",
   "author": "hsldevcom",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js",
+    "start:production": "node index.js",
+    "lint": "eslint index.js"
   },
   "dependencies": {
-    "@project-osrm/osrm": "^5.27.1"
+    "@project-osrm/osrm": "^5.27.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.46.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.1"
   }
 }
