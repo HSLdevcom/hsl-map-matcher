@@ -4,6 +4,7 @@ import { checkSchema, param, validationResult } from 'express-validator';
 import updateDatasets from './data.js';
 import { getProfiles, initNetworks, matchGeometry } from './matcher.js';
 import { getAvailableDatasets } from './util.js';
+import initCronJobs from './schedules.js';
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,7 @@ if (getAvailableDatasets().length === 0) {
 } else {
   initNetworks();
 }
+initCronJobs(); // Auto-update datasets
 
 app.use(express.json());
 
