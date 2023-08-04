@@ -28,7 +28,22 @@ app.get('/', (req, res) => {
   res.send('OK');
 });
 
-// Validation middlewares
+// Endpoint to check whether the service is running at all. Almost like '/' but without profile check
+app.get('/health', (req, res) => {
+  res.send('OK');
+});
+
+// Endpoint to get available profiles
+app.get('/profiles', (req, res) => {
+  const profiles = getProfiles();
+  if (profiles.length === 0) {
+    res.status(503).send('Map matching data is not yet ready. Try again a bit later.');
+    return;
+  }
+  res.send(profiles);
+});
+
+// Validation middlewares for /match -endpoint
 const validateProfile = param('profile').custom(async (val) => {
   if (!getProfiles().includes(val)) {
     throw new Error(`Given profile not found. Available profiles are: ${getProfiles().join(',')}`);
