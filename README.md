@@ -17,7 +17,13 @@ The app has three endpoints:
 
 - GET /
 
-  Check if the service is up and running. Returns 200 if everything is ready, 503 if data is not yet fetched (or update process is still running). For startup probes.
+  Check if the service is up and running. Returns 200 with data update timestamp if everything is ready, 503 if data is not yet fetched (or update process is still running). For startup probes.
+
+  Update timestamp is osm.pbf modifitacion time, so it doesn't tell the actual OSM data extraction time.
+  Example return value:
+  ```
+  {"mapDataLastUpdated":"2023-08-04T00:08:44.000Z"}
+  ```
 
 - GET /health
 

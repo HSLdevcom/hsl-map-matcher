@@ -19,4 +19,10 @@ const getAvailableDatasets = () => {
   return datasets;
 };
 
-export { getDataDir, getAvailableDatasets };
+// Gets the timestamp when OSM data was created. Relies on file system timestamp, so it gives just a hint.
+const getOSMUpdateTimestamp = () => {
+  const dataDir = getDataDir();
+  return fs.statSync(path.join(dataDir, 'map-data.osm.pbf')).mtime;
+};
+
+export { getDataDir, getAvailableDatasets, getOSMUpdateTimestamp };

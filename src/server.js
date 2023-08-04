@@ -4,7 +4,7 @@ import { checkSchema, param, validationResult } from 'express-validator';
 import { PORT } from './constants.js';
 import updateDatasets from './data.js';
 import { getProfiles, initNetworks, matchGeometry } from './matcher.js';
-import { getAvailableDatasets } from './util.js';
+import { getAvailableDatasets, getOSMUpdateTimestamp } from './util.js';
 import initCronJobs from './schedules.js';
 
 const app = express();
@@ -25,7 +25,8 @@ app.get('/', (req, res) => {
     res.status(503).send('Map matching data is not yet ready. Try again a bit later.');
     return;
   }
-  res.send('OK');
+  const dataUpdateTimestamp = getOSMUpdateTimestamp();
+  res.send({ mapDataLastUpdated: dataUpdateTimestamp });
 });
 
 // Endpoint to check whether the service is running at all. Almost like '/' but without profile check
