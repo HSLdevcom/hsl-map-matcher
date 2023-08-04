@@ -53,6 +53,7 @@ app.post('/match/:profile', [validateProfile, validateBody], async (req, res, ne
   if (!errResult.isEmpty()) {
     res.status(400);
     res.send({ errors: errResult.array() });
+    return next();
   }
   const { profile } = req.params;
 

@@ -1,26 +1,27 @@
-import fs from 'node:fs';
-
 import OSRM from '@project-osrm/osrm';
 
-const DATA_DIRECTORY = './data/';
+import { getDataDir, getAvailableDatasets } from './util.js';
 
-// Get all available routing dataset names
-const profiles = fs
-  .readdirSync(DATA_DIRECTORY, { withFileTypes: true })
-  .filter((f) => f.isDirectory())
-  .map((dir) => dir.name);
-
+// Store for osrm network datasets
 const networks = {};
 
 // Helper function to get available profiles
 const getProfiles = () => Object.keys(networks);
 
 const initNetworks = () => {
+  // Clear current profiles
+  Object.getOwnPropertyNames(networks).forEach((k) => delete networks[k]);
+
+  // Get all available routing dataset names
+  const dataDir = getDataDir();
+  const profiles = getAvailableDatasets();
+
   profiles.forEach((profile) => {
-    networks[profile] = new OSRM(`${DATA_DIRECTORY}${profile}/hsl.osrm`);
+    networks[profile] = new OSRM(`${dataDir}/${profile}/hsl.osrm`);
   });
 };
 
+// Matcher function. Takes geojson as input and returns geojson with map matching confidence level-
 const matchGeometry = async (profile, geometry) => {
   if (!getProfiles().includes(profile)) {
     throw Error(`Invalid profile: ${profile}`);
