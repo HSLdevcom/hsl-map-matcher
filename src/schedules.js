@@ -1,9 +1,10 @@
 import { CronJob } from 'cron';
 
+import { DATA_UPDATE_SCHEDULE } from './constants.js';
 import updateDatasets from './data.js';
 
 const dataUpdater = new CronJob(
-  '0 0 12 * * *', // default at noon. Better than midnight, because jore-import is running at night
+  DATA_UPDATE_SCHEDULE,
   () => updateDatasets(),
   null,
   false,

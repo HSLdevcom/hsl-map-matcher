@@ -20,7 +20,7 @@ const initNetworks = () => {
   const profiles = getAvailableDatasets();
 
   profiles.forEach((profile) => {
-    networks[profile] = new OSRM(`${dataDir}/${profile}/hsl.osrm`);
+    networks[profile] = new OSRM(`${dataDir}/${profile}/map-data.osrm`);
   });
 };
 

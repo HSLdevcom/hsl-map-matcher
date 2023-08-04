@@ -1,7 +1,12 @@
 #!/bin/bash
+if [ -z $OSM_DATA_URL ]; then
+  echo "Error: Env variable OSM_DATA_URL not set. Exiting."
+  exit 1
+fi
+
 echo "Fetching map data..."
 mkdir -p data/
-wget -q -O data/hsl.osm.pbf https://karttapalvelu.storage.hsldev.com/hsl.osm/hsl.osm.pbf
+wget -q -O data/map-data.osm.pbf $OSM_DATA_URL
 
 echo "Data is downloaded!"
 
@@ -14,10 +19,11 @@ do
   cp osrm-profiles/${profile}.lua node_modules/@project-osrm/osrm/profiles/${profile}.lua
 
   mkdir -p data/${profile}/
-  node_modules/@project-osrm/osrm/lib/binding/osrm-extract data/hsl.osm.pbf -p node_modules/@project-osrm/osrm/profiles/${profile}.lua
-  mv data/hsl.osrm* data/${profile}/ # Move data to profile-specific folder
-  node_modules/@project-osrm/osrm/lib/binding/osrm-contract data/${profile}/hsl.osrm
+  node_modules/@project-osrm/osrm/lib/binding/osrm-extract data/map-data.osm.pbf -p node_modules/@project-osrm/osrm/profiles/${profile}.lua
+  mv data/map-data.osrm* data/${profile}/ # Move data to profile-specific folder
+  node_modules/@project-osrm/osrm/lib/binding/osrm-contract data/${profile}/map-data.osrm
 done
 
 
 echo "Data preparation ready!"
+exit 0

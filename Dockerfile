@@ -17,4 +17,7 @@ RUN yarn && yarn cache clean
 
 COPY . ${WORK}
 
+ENV PORT 3000
+EXPOSE ${PORT}
+
 CMD [ "yarn", "start:production" ]

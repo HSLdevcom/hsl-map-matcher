@@ -1,13 +1,13 @@
 import express from 'express';
 import { checkSchema, param, validationResult } from 'express-validator';
 
+import { PORT } from './constants.js';
 import updateDatasets from './data.js';
 import { getProfiles, initNetworks, matchGeometry } from './matcher.js';
 import { getAvailableDatasets } from './util.js';
 import initCronJobs from './schedules.js';
 
 const app = express();
-const port = 3000;
 
 // Startup. If no datasets initialized, download datasets. Otherwise just init profiles.
 if (getAvailableDatasets().length === 0) {
@@ -96,7 +96,7 @@ app.post('/match/:profile', [validateProfile, validateBody], async (req, res, ne
   }
 });
 
-app.listen(port, () => {
+app.listen(PORT, () => {
   // eslint-disable-next-line no-console
-  console.log(`Map-matcher is running on port ${port}`);
+  console.log(`Map-matcher is running on port ${PORT}`);
 });

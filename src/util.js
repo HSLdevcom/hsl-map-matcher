@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const OSRM_PATTERN = /^hsl\.osrm\..*$/;
+const OSRM_PATTERN = /^map-data\.osrm\..*$/;
 
 // Helper function to return data directory location
 const getDataDir = () => path.join(process.cwd(), 'data');

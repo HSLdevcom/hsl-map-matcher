@@ -14,6 +14,7 @@
   "dependencies": {
     "@project-osrm/osrm": "^5.27.1",
     "cron": "^2.4.0",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1"
   },

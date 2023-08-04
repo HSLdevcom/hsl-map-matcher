@@ -1,11 +1,12 @@
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 
+import { OSM_DATA_URL } from './constants.js';
 import { clearProfiles, initNetworks } from './matcher.js';
 
 const updateDatasets = () => {
   clearProfiles();
-  const script = spawn(path.join(process.cwd(), 'prepare_data.sh'));
+  const script = spawn(path.join(process.cwd(), 'prepare_data.sh'), { env: { OSM_DATA_URL } });
 
   script.stdout.on('data', (data) => {
     // eslint-disable-next-line no-console
