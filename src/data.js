@@ -4,7 +4,16 @@ import path from 'node:path';
 import { OSM_DATA_URL } from './constants.js';
 import { clearProfiles, initNetworks } from './matcher.js';
 
+// Variable to prevent multiple update process to be started at the same time
+let processRunning = false;
+
 const updateDatasets = () => {
+  if (processRunning) {
+    // eslint-disable-next-line no-console
+    console.warn('Update process is already running. Skipping this update.');
+    return;
+  }
+  processRunning = true;
   clearProfiles();
   const script = spawn(path.join(process.cwd(), 'prepare_data.sh'), { env: { OSM_DATA_URL } });
 
@@ -19,6 +28,7 @@ const updateDatasets = () => {
   });
 
   script.on('close', (code) => {
+    processRunning = false;
     if (code === 0) {
       // eslint-disable-next-line no-console
       console.log(`prepare_data.sh executed successfully!`);

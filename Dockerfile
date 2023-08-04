@@ -16,6 +16,8 @@ COPY package.json yarn.lock ${WORK}
 RUN yarn && yarn cache clean
 
 COPY . ${WORK}
+# init data folder
+RUN mkdir -p ${WORK}/data
 
 ENV PORT 3000
 EXPOSE ${PORT}

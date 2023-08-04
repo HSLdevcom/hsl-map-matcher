@@ -5,6 +5,7 @@ if [ -z $OSM_DATA_URL ]; then
 fi
 
 echo "Fetching map data..."
+rm -rf data/ # Remove old data before udpate
 mkdir -p data/
 wget -q -O data/map-data.osm.pbf $OSM_DATA_URL
 
