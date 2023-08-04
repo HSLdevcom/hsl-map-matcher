@@ -1,23 +1,37 @@
 import express from 'express';
 import { checkSchema, param, validationResult } from 'express-validator';
 
+import updateDatasets from './data.js';
 import { getProfiles, initNetworks, matchGeometry } from './matcher.js';
+import { getAvailableDatasets } from './util.js';
 
 const app = express();
 const port = 3000;
 
-initNetworks();
+// Startup. If no datasets initialized, download datasets. Otherwise just init profiles.
+if (getAvailableDatasets().length === 0) {
+  updateDatasets();
+} else {
+  initNetworks();
+}
 
 app.use(express.json());
 
+// Endpoint to check whether the service is ready to process new requests.
 app.get('/', (req, res) => {
-  res.send('Welcome!');
+  if (getProfiles().length === 0) {
+    res.status(503).send('Map matching data is not yet ready. Try again a bit later.');
+    return;
+  }
+  res.send('OK');
 });
 
 // Validation middlewares
-const validateProfile = param('profile')
-  .isIn(getProfiles())
-  .withMessage(`Given profile not found. Available profiles are: ${getProfiles().join(',')}`);
+const validateProfile = param('profile').custom(async (val) => {
+  if (!getProfiles().includes(val)) {
+    throw new Error(`Given profile not found. Available profiles are: ${getProfiles().join(',')}`);
+  }
+});
 const validateBody = checkSchema(
   {
     geometry: { isObject: { errorMessage: 'GeoJSON format requires "geometry" field as object' } },
@@ -47,7 +61,13 @@ const validateBody = checkSchema(
   ['body'],
 );
 
+// Map matching endpoint. Assumes geojson as input. Returns map matched geometry as geojson
 app.post('/match/:profile', [validateProfile, validateBody], async (req, res, next) => {
+  if (getProfiles().length === 0) {
+    res.status(503).send('Map matching data is not yet ready. Try again a bit later.');
+    return next();
+  }
+
   const errResult = validationResult(req);
 
   if (!errResult.isEmpty()) {

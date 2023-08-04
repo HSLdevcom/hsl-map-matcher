@@ -8,9 +8,12 @@ const networks = {};
 // Helper function to get available profiles
 const getProfiles = () => Object.keys(networks);
 
+// Helper function to clear profiles
+const clearProfiles = () => Object.getOwnPropertyNames(networks).forEach((k) => delete networks[k]);
+
 const initNetworks = () => {
   // Clear current profiles
-  Object.getOwnPropertyNames(networks).forEach((k) => delete networks[k]);
+  clearProfiles();
 
   // Get all available routing dataset names
   const dataDir = getDataDir();
@@ -46,4 +49,4 @@ const matchGeometry = async (profile, geometry) => {
   });
 };
 
-export { initNetworks, getProfiles, matchGeometry };
+export { initNetworks, clearProfiles, getProfiles, matchGeometry };

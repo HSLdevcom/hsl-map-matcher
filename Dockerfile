@@ -17,4 +17,4 @@ RUN yarn && yarn cache clean
 
 COPY . ${WORK}
 
-CMD ./prepare_data.sh && yarn start:production
+CMD [ "yarn", "start:production" ]
