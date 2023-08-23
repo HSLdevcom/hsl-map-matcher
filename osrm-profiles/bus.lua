@@ -45,6 +45,8 @@ function setup()
     },
 
     barrier_whitelist = Set {
+      "gate",
+      "lift_gate"
     },
 
     access_tag_whitelist = Set {

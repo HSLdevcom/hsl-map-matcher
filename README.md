@@ -55,6 +55,7 @@ yarn start
 ```
 
 The app downloads all needed data on startup. After startup, the app is running on port 3000 (by default).
+First, if old data is not available, the app downloads OSM data and calculates the profiles. If the data already exists, and you want to update it, remove the content of `data/`-directory before startup.
 
 Custom env variables are not needed, but it's possible to set them up by creating `.env`. Check the constants affected by env on [`src/constants.js`](src/constants.js).
 
