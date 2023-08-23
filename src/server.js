@@ -101,6 +101,7 @@ app.post('/match/:profile', [validateProfile, validateBody], async (req, res, ne
     const fittedGeometry = await matchGeometry(profile, data.geometry);
     return res.send(fittedGeometry);
   } catch (err) {
+    // return 400 if the fit was not possible
     if (err.message === 'NoSegment') {
       return res
         .status(400)
