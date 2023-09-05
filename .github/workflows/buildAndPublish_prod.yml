@@ -44,4 +44,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: hsldevcom/hsl-map-mathcher:prod
+          tags: hsldevcom/hsl-map-matcher:prod
