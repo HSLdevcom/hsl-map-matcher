@@ -41,8 +41,16 @@ const matchGeometry = async (profile, geometry) => {
           return;
         }
         resolve({
-          confidence: response.matchings[0].confidence,
-          geometry: response.matchings[0].geometry,
+          confidence:
+            response.matchings.reduce((prev, curr) => prev + curr.confidence, 0) /
+            response.matchings.length, // Avg of confidence values.
+          geometry: {
+            coordinates: response.matchings.reduce(
+              (prev, curr) => prev.concat(curr.geometry.coordinates),
+              [],
+            ),
+            type: 'LineString',
+          },
         });
       },
     );
