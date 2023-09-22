@@ -34,7 +34,14 @@ const matchGeometry = async (profile, geometry) => {
 
   return new Promise((resolve, reject) => {
     osrm.match(
-      { coordinates: geometry.coordinates, overview: 'full', geometries: 'geojson' },
+      {
+        coordinates: geometry.coordinates,
+        overview: 'full',
+        geometries: 'geojson',
+        tidy: true,
+        gaps: 'ignore',
+        radiuses: geometry.coordinates.map(() => 15.0), // Set accuracy to 15 meters
+      },
       (err, response) => {
         if (err) {
           reject(err);

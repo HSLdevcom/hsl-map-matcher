@@ -23,11 +23,11 @@ function setup()
       -- For shortest distance without penalties for accessibility
       weight_name                     = 'distance',
       process_call_tagless_node      = false,
-      u_turn_penalty                 = 20,
+      u_turn_penalty                 = 0,
       continue_straight_at_waypoint  = true,
-      use_turn_restrictions          = true,
+      use_turn_restrictions          = false,
       left_hand_driving              = false,
-      traffic_light_penalty          = 2,
+      traffic_light_penalty          = 0,
     },
 
     default_mode              = mode.driving,
