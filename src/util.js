@@ -10,6 +10,12 @@ const getDataDir = () => path.join(process.cwd(), 'data');
 const getAvailableDatasets = () => {
   const dataDir = getDataDir();
 
+  // create datadir if not exists
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
+  }
+
+  // find osrm datasets
   const datasets = fs
     .readdirSync(dataDir, { withFileTypes: true })
     .filter((d) => d.isDirectory())

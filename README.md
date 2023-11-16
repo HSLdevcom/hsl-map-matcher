@@ -63,5 +63,5 @@ Custom env variables are not needed, but it's possible to set them up by creatin
 
 ```
 docker build . -t hsl-map-matcher
-docker run -d -p 3000:3000 --name hsl-map-mathcer hsl-map-matcher
+docker run -d -p 3000:3000 --name hsl-map-matcher hsl-map-matcher
 ```
