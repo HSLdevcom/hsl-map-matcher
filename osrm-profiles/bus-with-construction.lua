@@ -199,6 +199,15 @@ function process_node(profile, node, result, relations)
   result.traffic_lights = TrafficSignal.get_value(node)
 end
 
+-- helper function to handle construction tags (filter away constructions not listed in speeds table)
+function handle_constructions(profile, way, result, data)
+  local construction = way:get_value_by_key("construction")
+
+  if construction and not profile.speeds.highway[construction] then
+    return false
+  end
+end
+
 function process_way(profile, way, result, relations)
   -- the intial filtering of ways based on presence of tags
   -- affects processing times significantly, because all ways
@@ -235,6 +244,9 @@ function process_way(profile, way, result, relations)
     -- check various tags that could indicate that the way is not
     -- routable. this includes things like status=impassable,
     -- toll=yes and oneway=reversible
+
+    handle_constructions, -- our custom construction filter
+
     WayHandlers.blocked_ways,
     WayHandlers.avoid_ways,
 
