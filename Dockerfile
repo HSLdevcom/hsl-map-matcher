@@ -5,7 +5,7 @@ ENV NODE_ENV production
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-    wget ca-certificates \
+    curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p ${WORK}
