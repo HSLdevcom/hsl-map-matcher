@@ -170,8 +170,10 @@ function process_node(profile, node, result, relations)
       --  check height restriction barriers
       local restricted_by_height = false
       if barrier == 'height_restrictor' then
-         local maxheight = Measure.get_max_height(node:get_value_by_key("maxheight"), node)
-         restricted_by_height = maxheight and maxheight < profile.vehicle_height
+        if maxheight and profile.vehicle_height then
+          local maxheight = Measure.get_max_height(node:get_value_by_key("maxheight"), node)
+          restricted_by_height = maxheight and maxheight < profile.vehicle_height
+        end
       end
 
       --  make an exception for rising bollard barriers
