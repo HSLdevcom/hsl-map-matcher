@@ -13,27 +13,27 @@ Profiles can be found on [`osrm-profiles/`](osrm-profiles/). They are copied to 
 
 ## Usage
 
-The app has three endpoints:
+The app has the following endpoints:
 
-- GET /
+- `GET /`
 
   Check if the service is up and running. Returns 200 with data update timestamp if everything is ready, 503 if data is not yet fetched (or update process is still running). For startup probes.
 
-  Update timestamp is osm.pbf modifitacion time, so it doesn't tell the actual OSM data extraction time.
+  Note that the update timestamp is osm.pbf modifitacion time, so it doesn't tell the actual OSM data extraction time.
   Example return value:
   ```
   {"mapDataLastUpdated":"2023-08-04T00:08:44.000Z"}
   ```
 
-- GET /health
+- `GET /health`
 
   Check if the service is up and running without checking profiles. For liveness probes.
 
-- GET /profiles
+- `GET /profiles`
 
   Check the available profiles that can be used in `/match` -endpoint. Usually `[bus,tram,trambus]`.
 
-- POST /match/:profile
+- `POST /match/:profile`
 
   Matcher endpoint. Expects data to be a linestring geometry in GeoJSON format. Returns fitted geometry in GeoJSON format with confidence level.
 
@@ -59,9 +59,29 @@ First, if old data is not available, the app downloads OSM data and calculates t
 
 Custom env variables are not needed, but it's possible to set them up by creating `.env`. Check the constants affected by env on [`src/constants.js`](src/constants.js).
 
-# Running on Docker:
+## Running on Docker:
 
 ```
 docker build . -t hsl-map-matcher
 docker run -d -p 3000:3000 --name hsl-map-matcher hsl-map-matcher
 ```
+
+## Testing with JORE data
+
+To test how the map matcher works with actual routes, you can query the point geometry as GeoJSON lines and send them to the map matcher.
+
+Execute the sql query on the database, like:
+
+```sql
+SELECT ST_AsGeoJSON( ST_MakeLine(pg.point ORDER BY index) )
+FROM point_geometry pg
+WHERE route_id = '1055' AND date_begin = '2025-03-03' AND direction = '1' 
+```
+
+Create the valid geojson from the result, and send it to the matcher. For example, with curl:
+
+```
+curl -X POST -H "Content-Type: application/json" localhost:3000/match/bus -d '{"geometry": <paste the sql result here>}' > matched.geojson
+```
+
+The easiest way to visualize the response is probably saving it as GeoJSON file and open it with QGIS. Remove 'confidence' -property from the response, as it's not part of the GeoJSON starndard and QGIS may not be able to open files with it.
