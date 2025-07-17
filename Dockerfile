@@ -1,7 +1,7 @@
 FROM node:18-bullseye-slim
 
-ENV WORK /opt/map-matcher
-ENV NODE_ENV production
+ENV WORK=/opt/map-matcher
+ENV NODE_ENV=production
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
@@ -19,7 +19,7 @@ COPY . ${WORK}
 # init data folder
 RUN mkdir -p ${WORK}/data
 
-ENV PORT 3000
+ENV PORT=3000
 EXPOSE ${PORT}
 
 CMD [ "yarn", "start:production" ]
