@@ -1,6 +1,6 @@
 {
   "name": "hsl-map-matcher",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "src/server.js",
   "type": "module",
   "repository": "git@github.com:HSLdevcom/hsl-map-matcher.git",
