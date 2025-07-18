@@ -131,7 +131,6 @@ dist
 
 # Data processing folder
 data
-old_data
 
 # mac
 .DS_Store
