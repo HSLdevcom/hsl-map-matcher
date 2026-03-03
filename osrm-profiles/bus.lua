@@ -12,6 +12,104 @@ limit = require("lib/maxspeed").limit
 Utils = require("lib/utils")
 Measure = require("lib/measure")
 
+local mocks = {}
+
+local function get_tag(way, key)
+	local way_id = tostring(way:id())
+	if mocks[way_id] and mocks[way_id][key] then
+		return mocks[way_id][key]
+	end
+	return way:get_value_by_key(key)
+end
+
+local current_date = os.date("%Y%m%d")
+local current_year = tonumber(os.date("%Y"))
+local current_month = tonumber(os.date("%m"))
+local current_day = tonumber(os.date("%d"))
+
+-- Helper function to parse OSM date formats
+-- Supports: "2025", "2025-11", "2025-11-03", "2025-11-03T12:00:00Z"
+-- Returns: YYYYMMDD as number, or nil if invalid
+function parse_date(date_str, is_end_date)
+	if not date_str or date_str == "" then
+		return nil
+	end
+
+	local year = tonumber(string.match(date_str, "^(%d%d%d%d)"))
+	if not year then
+		return nil
+	end
+
+	local month = tonumber(string.match(date_str, "%-(%d%d)"))
+	if not month then
+		if is_end_date then
+			month = 12
+		else
+			month = 1
+		end
+	end
+
+	local day = tonumber(string.match(date_str, "%-%d%d%-(%d%d)"))
+	if not day then
+		if is_end_date then
+			local days_in_month = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
+			day = days_in_month[month]
+		else
+			day = 1
+		end
+	end
+
+	return year * 10000 + month * 100 + day
+end
+
+-- Check if a construction way should be allowed based on temporal tags
+-- Logic:
+--   - Construction with whitelisted construction value → always allow
+--   - Construction with NO dates → avoid (assume actually under construction)
+--   - Construction with opening_date in past → allow (stale construction tag, should be open)
+--   - Construction with opening_date in future → avoid (not opened yet)
+-- Returns true if construction way should be excluded, false if allowed
+function should_exclude_construction(profile, way)
+	local construction = get_tag(way, "construction")
+	if construction and profile.construction_whitelist[construction] then
+		return false
+	end
+
+	local opening_date_str = get_tag(way, "opening_date")
+
+	if not opening_date_str or opening_date_str == "" then
+		return true
+	end
+
+	if opening_date_str and opening_date_str ~= "" then
+		local opening_date = parse_date(opening_date_str, false)
+		if opening_date then
+			if opening_date > tonumber(current_date) then
+				return true
+			else
+				return false
+			end
+		end
+	end
+
+	return true
+end
+
+-- Check if a way should be filtered based on temporal tags
+-- Returns true if way should be excluded, false otherwise
+function should_exclude_by_date(way)
+	local opening_date_str = get_tag(way, "opening_date")
+
+	if opening_date_str and opening_date_str ~= "" then
+		local opening_date = parse_date(opening_date_str, false)
+		if opening_date and opening_date > tonumber(current_date) then
+			return true -- Not opened yet
+		end
+	end
+
+	return false
+end
+
 function setup()
 	return {
 		properties = {
@@ -194,8 +292,8 @@ function process_way(profile, way, result, relations)
 	-- data table for storing intermediate values during processing
 	local data = {
 		-- prefetch tags
-		highway = way:get_value_by_key("highway"),
-		railway = way:get_value_by_key("railway"),
+		highway = get_tag(way, "highway"),
+		railway = get_tag(way, "railway"),
 	}
 
 	-- perform an quick initial check and abort if the way is
@@ -203,6 +301,16 @@ function process_way(profile, way, result, relations)
 	-- highway or route tags must be in data table, bridge is optional
 	if (not data.highway or data.highway == "") and (not data.railway or data.railway == "") then
 		return
+	end
+
+	if data.highway == "construction" then
+		if should_exclude_construction(profile, way) then
+			return
+		end
+	else
+		if should_exclude_by_date(way) then
+			return
+		end
 	end
 
 	handlers = Sequence({
