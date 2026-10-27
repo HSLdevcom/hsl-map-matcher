@@ -9,8 +9,8 @@ fi
 
 readonly DATA_DIR='data/'
 readonly OSM_DATA_FILE='map-data.osm.pbf'
-readonly OSRM_EXTRACT_PATH='./node_modules/@project-osrm/osrm/lib/binding/osrm-extract'
-readonly OSRM_CONTRACT_PATH='./node_modules/@project-osrm/osrm/lib/binding/osrm-contract'
+readonly OSRM_EXTRACT_PATH='./node_modules/@project-osrm/osrm/lib/binding_napi_v8/osrm-extract'
+readonly OSRM_CONTRACT_PATH='./node_modules/@project-osrm/osrm/lib/binding_napi_v8/osrm-contract'
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "${tmp_dir}"' EXIT
