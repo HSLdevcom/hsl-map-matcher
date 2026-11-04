@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { spawn } from 'node:child_process';
 import path from 'node:path';
 
@@ -9,7 +10,6 @@ let processRunning = false;
 
 const updateDatasets = () => {
   if (processRunning) {
-    // eslint-disable-next-line no-console
     console.warn('Update process is already running. Skipping this update.');
     return;
   }
@@ -18,25 +18,24 @@ const updateDatasets = () => {
   const script = spawn(path.join(process.cwd(), 'prepare_data.sh'), { env: { OSM_DATA_URL } });
 
   script.stdout.on('data', (data) => {
-    // eslint-disable-next-line no-console
     console.log(`prepare_data.sh: ${data}`);
   });
 
   script.stderr.on('data', (data) => {
-    // eslint-disable-next-line no-console
     console.error(`prepare_data.sh: ${data}`);
   });
 
   script.on('close', (code) => {
     processRunning = false;
     if (code === 0) {
-      // eslint-disable-next-line no-console
       console.log(`prepare_data.sh executed successfully!`);
 
       // Data ready, update new network profiles
       initNetworks();
     } else {
-      throw new Error(`prepare_data.sh raised error and exited with code ${code}`);
+      console.error(
+        `prepare_data.sh raised error and exited with code ${code}. See previous output for details.`,
+      );
     }
   });
 };

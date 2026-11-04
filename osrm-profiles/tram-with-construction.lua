@@ -150,37 +150,39 @@ function process_node(profile, node, result, relations)
     if profile.access_tag_blacklist[access] and not profile.restricted_access_tag_list[access] then
       -- result.barrier = true -- disabled to allow routing through access=no
     end
-  else
-    local barrier = node:get_value_by_key("barrier")
-    if barrier then
-      --  check height restriction barriers
-      local restricted_by_height = false
-      if barrier == 'height_restrictor' then
-        if maxheight and profile.vehicle_height then
-          local maxheight = Measure.get_max_height(node:get_value_by_key("maxheight"), node)
-          restricted_by_height = maxheight and maxheight < profile.vehicle_height
-        end
-      end
+  -- disable barrier check for construction profile
+  
+  -- else
+  --   local barrier = node:get_value_by_key("barrier")
+  --   if barrier then
+  --     --  check height restriction barriers
+  --     local restricted_by_height = false
+  --     if barrier == 'height_restrictor' then
+  --       if maxheight and profile.vehicle_height then
+  --         local maxheight = Measure.get_max_height(node:get_value_by_key("maxheight"), node)
+  --         restricted_by_height = maxheight and maxheight < profile.vehicle_height
+  --       end
+  --     end
 
-      --  make an exception for rising bollard barriers
-      local bollard = node:get_value_by_key("bollard")
-      local rising_bollard = bollard and "rising" == bollard
+  --     --  make an exception for rising bollard barriers
+  --     local bollard = node:get_value_by_key("bollard")
+  --     local rising_bollard = bollard and "rising" == bollard
 
-      -- make an exception for lowered/flat barrier=kerb
-      -- and incorrect tagging of highway crossing kerb as highway barrier
-      local kerb = node:get_value_by_key("kerb")
-      local highway = node:get_value_by_key("highway")
-      local flat_kerb = kerb and ("lowered" == kerb or "flush" == kerb)
-      local highway_crossing_kerb = barrier == "kerb" and highway and highway == "crossing"
+  --     -- make an exception for lowered/flat barrier=kerb
+  --     -- and incorrect tagging of highway crossing kerb as highway barrier
+  --     local kerb = node:get_value_by_key("kerb")
+  --     local highway = node:get_value_by_key("highway")
+  --     local flat_kerb = kerb and ("lowered" == kerb or "flush" == kerb)
+  --     local highway_crossing_kerb = barrier == "kerb" and highway and highway == "crossing"
 
-      if not profile.barrier_whitelist[barrier]
-                and not rising_bollard
-                and not flat_kerb
-                and not highway_crossing_kerb
-                or restricted_by_height then
-        result.barrier = true
-      end
-    end
+  --     if not profile.barrier_whitelist[barrier]
+  --               and not rising_bollard
+  --               and not flat_kerb
+  --               and not highway_crossing_kerb
+  --               or restricted_by_height then
+  --       result.barrier = true
+  --     end
+  --   end
   end
 
   -- check if node is a traffic light
